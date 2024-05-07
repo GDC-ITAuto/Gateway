@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>File Upload and Comparison Report</title>
+    <style>
+        /* Global Styles */
+       
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://www.ibm.com/design/language/static/d364f8541a48fa723bb502e883144239/040c5/2306_73_IDL_gallery.jpg');
+            background-size: cover;
+            font-size: 15px;
+            overflow-x: hidden;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        /* Section Styles */
+        .section {
+            flex: 0 0 48%;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-sizing: border-box;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Two Column Layout for Input Form */
+        .input-form-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .input-section {
+            flex: 0 0 50%;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        select {
+            width: 60%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #4caf50;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .submit-button {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .download-button {
+            background-color: #007bff;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* Metric Box Styles */
+        .metric-box {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            flex: 0 0 48%;
+            box-sizing: border-box;
+        }
+
+        .metric-box h4 {
+            margin: 0 0 10px 0;
+        }
+
+        .metric-box p {
+            margin: 5px 0;
+        }
+
+        /* Classes for match and mismatch */
+        .match {
+            border-color: green;
+        }
+
+        .mismatch {
+            border-color: red;
+        }
+
+        /* Footer Styles */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        /* Hidden elements */
+        .hidden {
+            display: none;
+        }
+
+        /* Add styles for the metric descriptions table */
+#metric-descriptions table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#metric-descriptions th,
+#metric-descriptions td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Metric Descriptions Section -->
+        <div class="section" id="metric-descriptions">
+            <h3>Metric Descriptions</h3>
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Cache Hash Table Size</td>
+                    <td>Size of the cache hash table</td>
+                </tr>
+                <tr>
+                    <td>Max Batch Size</td>
+                    <td>Maximum batch size for JDBC</td>
+                </tr>
+                <tr>
+                    <td>JDBC Mode</td>
+                    <td>Mode for JDBC operation</td>
+                </tr>
+                <tr>
+                    <td>Resync Mode</td>
+                    <td>Resync mode for JDBC</td>
+                </tr>
+                <tr>
+                    <td>Gateway Version</td>
+                    <td>Netcool Gateway version</td>
+                </tr>
+                <tr>
+                    <td>JDBC Connections</td>
+                    <td>Number of JDBC connections</td>
+                </tr>
+            </table>
+        </div>
+    
+        <!-- Report and Comparison Section -->
+        <div class="section" id="report-section">
+            <h2> Netcool Omnibus JDBC Gateway</h2>
+
+            <h3>Report</h3>
+            <!-- Input Form -->
+            <form id="input-form" onsubmit="generateReport(event)">
+                <div class="input-form-container">
+                    <!-- First Column: Gateway Version -->
+                    <div class="input-section">
+                        <label for="gatewayVersion">Gateway Version:</label>
+                        <input type="text" id="gatewayVersion" name="gatewayVersion">
+                    </div>
+                    <!-- Second Column: Other Parameters -->
+                    <div class="input-section">
+                        <label for="cacheHashTblSize">Cache Hash Table Size:</label>
+                        <input type="text" id="cacheHashTblSize" name="cacheHashTblSize">
+                        <label for="jdbcMaxBatchSize">Max Batch Size:</label>
+                        <input type="text" id="jdbcMaxBatchSize" name="jdbcMaxBatchSize">
+                        <label for="jdbcMode">JDBC Mode:</label>
+                        <input type="text" id="jdbcMode" name="jdbcMode">
+                        <label for="jdbcResyncMode">Resync Mode:</label>
+                        <input type="text" id="jdbcResyncMode" name="jdbcResyncMode">
+                        <label for="jdbcConnections">JDBC Connections:</label>
+                        <input type="text" id="jdbcConnections" name="jdbcConnections">
+                    </div>
+                </div>
+                <button type="submit" class="submit-button">Submit</button>
+            </form>
+
+            <!-- Report Content -->
+            <div id="report-content" class="hidden">
+                <h4>Comparison Report</h4>
+                <!-- Metric Boxes -->
+                <div id="metric-boxes">
+                    <!-- First Row of Metric Boxes -->
+                    <div class="metric-boxes-row" style="display: flex;">
+                        <div class="metric-box" id="box-cacheHashTblSize" style="flex: 1; margin-right: 10px;">
+                            <h4>Cache Hash Table Size</h4>
+                            <p><strong>Entered Value:</strong> <span id="input-cacheHashTblSize"></span></p>
+                            <p><strong>Expected Value:</strong> 1024</p>
+                        </div>
+                        <div class="metric-box" id="box-jdbcMaxBatchSize" style="flex: 1;">
+                            <h4>Max Batch Size</h4>
+                            <p><strong>Entered Value:</strong> <span id="input-jdbcMaxBatchSize"></span></p>
+                            <p><strong>Expected Value:</strong> 50</p>
+                        </div>
+                    </div>
+                    <!-- Second Row of Metric Boxes -->
+                    <div class="metric-boxes-row" style="display: flex; margin-top: 10px;">
+                        <div class="metric-box" id="box-jdbcMode" style="flex: 1; margin-right: 10px;">
+                            <h4>JDBC Mode</h4>
+                            <p><strong>Entered Value:</strong> <span id="input-jdbcMode"></span></p>
+                            <p><strong>Expected Value:</strong> Normal</p>
+                        </div>
+                        <div class="metric-box" id="box-jdbcResyncMode" style="flex: 1;">
+                            <h4>Resync Mode</h4>
+                            <p><strong>Entered Value:</strong> <span id="input-jdbcResyncMode"></span></p>
+                            <p><strong>Expected Value:</strong> Automatic</p>
+                        </div>
+                    </div>
+                    <!-- Third Row of Metric Boxes -->
+                    <div class="metric-boxes-row" style="display: flex; margin-top: 10px;">
+                        <div class="metric-box" id="box-gatewayVersion" style="flex: 1; margin-right: 10px;">
+                            <h4>Gateway Version</h4>
+                            <p><strong>Entered Value:</strong> <span id="input-gatewayVersion"></span></p>
+                            <p><strong>Expected Value:</strong> 8.1.0.5</p>
+                        </div>
+                        <div class="metric-box" id="box-jdbcConnections" style="flex: 1;">
+                            <h4>JDBC Connections</h4>
+                            <p><strong>Entered Value:</strong> <span id="input-jdbcConnections"></span></p>
+                            <p><strong>Expected Value:</strong> 5</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-button" onclick="downloadPDF()">Download as PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 File Upload and Comparison Report. All rights reserved.
+    </footer>
+
+    <script>
+        /* Function to handle the form submission and comparison logic */
+        function generateReport(event) {
+            event.preventDefault();
+
+            // Get user inputs
+            const gatewayVersion = document.getElementById('gatewayVersion').value;
+            const cacheHashTblSize = document.getElementById('cacheHashTblSize').value;
+            const jdbcMaxBatchSize = document.getElementById('jdbcMaxBatchSize').value;
+            const jdbcMode = document.getElementById('jdbcMode').value;
+            const jdbcResyncMode = document.getElementById('jdbcResyncMode').value;
+            const jdbcConnections = document.getElementById('jdbcConnections').value;
+
+            // Display the report content
+            document.getElementById('report-content').classList.remove('hidden');
+
+            // Set user inputs in metric boxes
+            document.getElementById('input-gatewayVersion').innerText = gatewayVersion;
+            document.getElementById('input-cacheHashTblSize').innerText = cacheHashTblSize;
+            document.getElementById('input-jdbcMaxBatchSize').innerText = jdbcMaxBatchSize;
+            document.getElementById('input-jdbcMode').innerText = jdbcMode;
+            document.getElementById('input-jdbcResyncMode').innerText = jdbcResyncMode;
+            document.getElementById('input-jdbcConnections').innerText = jdbcConnections;
+
+            // Compare entered and expected values and set class accordingly
+            compareAndSetClass('box-gatewayVersion', gatewayVersion, '8.1.0.5');
+            compareAndSetClass('box-cacheHashTblSize', cacheHashTblSize, '1024');
+            compareAndSetClass('box-jdbcMaxBatchSize', jdbcMaxBatchSize, '50');
+            compareAndSetClass('box-jdbcMode', jdbcMode, 'Normal');
+            compareAndSetClass('box-jdbcResyncMode', jdbcResyncMode, 'Automatic');
+            compareAndSetClass('box-jdbcConnections', jdbcConnections, '5');
+        }
+
+        /* Function to compare entered and expected values and set class */
+        function compareAndSetClass(boxId, enteredValue, expectedValue) {
+            const box = document.getElementById(boxId);
+            if (enteredValue === expectedValue) {
+                box.classList.add('match');
+                box.classList.remove('mismatch');
+            } else {
+                box.classList.add('mismatch');
+                box.classList.remove('match');
+            }
+        }
+
+        /* Function to handle PDF download (not implemented here) */
+        function downloadPDF() {
+            window.print();
+        }
+    </script>
+</body>
+
+</html>
